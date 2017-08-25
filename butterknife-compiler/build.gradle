@@ -7,7 +7,9 @@ targetCompatibility = JavaVersion.VERSION_1_7
 dependencies {
   implementation project(':butterknife-annotations')
   implementation deps.auto.common
+  implementation 'com.github.gradle.incap:incap-ap-client:master-SNAPSHOT'
   api deps.javapoet
+
   compileOnly deps.auto.service
   compileOnly files(org.gradle.internal.jvm.Jvm.current().getToolsJar())
 

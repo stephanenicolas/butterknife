@@ -77,6 +77,9 @@ subprojects { project ->
     maven {
       url "https://plugins.gradle.org/m2/"
     }
+    maven {
+      url "https://jitpack.io"
+    }
   }
 
   if (!project.name.equals('butterknife-gradle-plugin')) {
