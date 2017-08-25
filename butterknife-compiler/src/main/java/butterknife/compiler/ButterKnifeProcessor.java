@@ -57,8 +57,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
@@ -80,6 +78,8 @@ import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
+import org.gradle.incap.BaseIncrementalAnnotationProcessor;
+import org.gradle.incap.IncapProcessorWorkflowFactory;
 
 import static javax.lang.model.element.ElementKind.CLASS;
 import static javax.lang.model.element.ElementKind.INTERFACE;
@@ -88,7 +88,7 @@ import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.STATIC;
 
 @AutoService(Processor.class)
-public final class ButterKnifeProcessor extends AbstractProcessor {
+public final class ButterKnifeProcessor extends BaseIncrementalAnnotationProcessor {
   // TODO remove when http://b.android.com/187527 is released.
   private static final String OPTION_SDK_INT = "butterknife.minSdk";
   private static final String OPTION_DEBUGGABLE = "butterknife.debuggable";
@@ -125,7 +125,7 @@ public final class ButterKnifeProcessor extends AbstractProcessor {
 
   private Elements elementUtils;
   private Types typeUtils;
-  private Filer filer;
+
   private Trees trees;
 
   private int sdk = 1;
@@ -134,6 +134,7 @@ public final class ButterKnifeProcessor extends AbstractProcessor {
   private final Map<QualifiedId, Id> symbols = new LinkedHashMap<>();
 
   @Override public synchronized void init(ProcessingEnvironment env) {
+
     super.init(env);
 
     String sdk = env.getOptions().get(OPTION_SDK_INT);
@@ -152,14 +153,14 @@ public final class ButterKnifeProcessor extends AbstractProcessor {
 
     elementUtils = env.getElementUtils();
     typeUtils = env.getTypeUtils();
-    filer = env.getFiler();
+
     try {
       trees = Trees.instance(processingEnv);
     } catch (IllegalArgumentException ignored) {
     }
   }
 
-  @Override public Set<String> getSupportedOptions() {
+  @Override public Set<String> getAdditionalSupportedOptions() {
     return ImmutableSet.of(OPTION_SDK_INT, OPTION_DEBUGGABLE);
   }
 
@@ -192,16 +193,16 @@ public final class ButterKnifeProcessor extends AbstractProcessor {
     return annotations;
   }
 
-  @Override public boolean process(Set<? extends TypeElement> elements, RoundEnvironment env) {
+  @Override public boolean incrementalProcess(Set<? extends TypeElement> elements, RoundEnvironment env) {
     Map<TypeElement, BindingSet> bindingMap = findAndParseTargets(env);
 
     for (Map.Entry<TypeElement, BindingSet> entry : bindingMap.entrySet()) {
       TypeElement typeElement = entry.getKey();
       BindingSet binding = entry.getValue();
 
-      JavaFile javaFile = binding.brewJava(sdk, debuggable);
+      JavaFile javaFile = binding.brewJava(sdk, debuggable, typeElement);
       try {
-        javaFile.writeTo(filer);
+        javaFile.writeTo(getFiler());
       } catch (IOException e) {
         error(typeElement, "Unable to write binding for type %s: %s", typeElement, e.getMessage());
       }

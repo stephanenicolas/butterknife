@@ -61,4 +61,15 @@ def getRuntimeJar() {
   }
 }
 
+afterEvaluate {
+  println "create incap folder " + it.toString()
+  File temp = new File(project.buildDir,"/tmp/")
+
+  println temp.getAbsolutePath() + " -> " + temp.mkdirs().toString()
+  tasks.withType(JavaCompile).each {
+    println "Add incap options to " + it.toString()
+    it.options.compilerArgs = ["-verbose", "-Aincap.mapping.folder=${temp.getAbsolutePath()}"]
+  }
+}
+
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

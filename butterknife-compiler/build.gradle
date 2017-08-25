@@ -7,7 +7,7 @@ targetCompatibility = JavaVersion.VERSION_1_7
 dependencies {
   implementation project(':butterknife-annotations')
   implementation deps.auto.common
-  implementation 'com.github.gradle.incap:incap-ap-client:master-SNAPSHOT'
+  api 'com.github.gradle.incap:incap-ap-client:sni~issue-80-SNAPSHOT'
   api deps.javapoet
 
   compileOnly deps.auto.service
@@ -22,6 +22,17 @@ checkstyle {
   showViolations true
   //Remove this when tests are less verbose, i.e. using JavaPoet
   sourceSets = [sourceSets.main]
+}
+
+afterEvaluate {
+  println "create incap folder " + it.toString()
+  File temp = new File(project.buildDir,"/tmp/")
+
+  println temp.getAbsolutePath() + " -> " + temp.mkdirs().toString()
+  tasks.withType(JavaCompile).each {
+    println "Add incap options to " + it.toString()
+    it.options.compilerArgs = ["-Aincap.mapping.folder=${temp.getAbsolutePath()}"]
+  }
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
