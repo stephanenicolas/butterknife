@@ -231,6 +231,7 @@ afterEvaluate { project ->
       vcsUrl = "https://github.com/stephanenicolas/butterknife.git"
       version {
         name = "$VERSION_NAME"
+        desc = "BK fork using incap version ${rootProject.ext.versions.incap}"
       }
     }
   }

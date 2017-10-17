@@ -13,7 +13,7 @@ repositories {
 dependencies {
   implementation project(':butterknife-annotations')
   implementation deps.auto.common
-  api 'org.gradle.incap:incap-ap-client:0.0.2'
+  api deps.incap
   api deps.javapoet
 
   compileOnly deps.auto.service
