@@ -192,7 +192,8 @@ public final class ButterKnifeProcessor extends BaseIncrementalAnnotationProcess
     return annotations;
   }
 
-  @Override public boolean incrementalProcess(Set<? extends TypeElement> elements, RoundEnvironment env) {
+  @Override
+  public boolean incrementalProcess(Set<? extends TypeElement> elements, RoundEnvironment env) {
     Map<TypeElement, BindingSet> bindingMap = findAndParseTargets(env);
 
     for (Map.Entry<TypeElement, BindingSet> entry : bindingMap.entrySet()) {

@@ -93,7 +93,7 @@ final class BindingSet {
   private TypeSpec createType(int sdk, boolean debuggable, Element... originatingElements) {
     TypeSpec.Builder result = TypeSpec.classBuilder(bindingClassName.simpleName())
         .addModifiers(PUBLIC);
-    if(originatingElements != null) {
+    if (originatingElements != null) {
       for (Element originatingElement : originatingElements) {
         result.addOriginatingElement(originatingElement);
       }
