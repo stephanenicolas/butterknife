@@ -16,6 +16,8 @@
 
 apply plugin: 'maven'
 apply plugin: 'signing'
+apply plugin: 'com.jfrog.bintray'
+
 
 version = VERSION_NAME
 group = GROUP
@@ -213,6 +215,23 @@ afterEvaluate { project ->
     } else {
       archives sourcesJar
       archives javadocJar
+    }
+  }
+
+  bintray {
+    user = project.hasProperty("BINTRAY_USER") ? "$BINTRAY_USER" : System.getenv("BINTRAY_USER")
+    key = project.hasProperty("BINTRAY_KEY") ? "$BINTRAY_KEY" : System.getenv("BINTRAY_KEY")
+
+    configurations = ['archives']
+    pkg {
+      repo = 'butterknife'
+      name = "${POM_ARTIFACT_ID}"
+      userOrg = 'incap'
+      licenses = ['Apache-2.0']
+      vcsUrl = "https://github.com/stephanenicolas/butterknife.git"
+      version {
+        name = "$VERSION_NAME"
+      }
     }
   }
 }
