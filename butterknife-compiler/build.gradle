@@ -4,10 +4,16 @@ apply plugin: 'checkstyle'
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
 
+repositories {
+  maven {
+    url  "https://dl.bintray.com/incap/incap"
+  }
+}
+
 dependencies {
   implementation project(':butterknife-annotations')
   implementation deps.auto.common
-  api 'com.github.gradle.incap:incap-ap-client:sni~issue-80-SNAPSHOT'
+  api 'org.gradle.incap:incap-ap-client:0.0.2'
   api deps.javapoet
 
   compileOnly deps.auto.service
@@ -24,6 +30,7 @@ checkstyle {
   sourceSets = [sourceSets.main]
 }
 
+/*
 afterEvaluate {
   println "create incap folder " + it.toString()
   File temp = new File(project.buildDir,"/tmp/")
@@ -34,5 +41,6 @@ afterEvaluate {
     it.options.compilerArgs = ["-Aincap.mapping.folder=${temp.getAbsolutePath()}"]
   }
 }
+*/
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

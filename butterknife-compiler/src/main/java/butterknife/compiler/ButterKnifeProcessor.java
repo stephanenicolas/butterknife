@@ -79,7 +79,6 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
 import org.gradle.incap.BaseIncrementalAnnotationProcessor;
-import org.gradle.incap.IncapProcessorWorkflowFactory;
 
 import static javax.lang.model.element.ElementKind.CLASS;
 import static javax.lang.model.element.ElementKind.INTERFACE;
@@ -202,7 +201,7 @@ public final class ButterKnifeProcessor extends BaseIncrementalAnnotationProcess
 
       JavaFile javaFile = binding.brewJava(sdk, debuggable, typeElement);
       try {
-        javaFile.writeTo(getFiler());
+        javaFile.writeTo(incrementalProcessingEnvironment.getFiler());
       } catch (IOException e) {
         error(typeElement, "Unable to write binding for type %s: %s", typeElement, e.getMessage());
       }
