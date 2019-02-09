@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+Version 10.0.0.4 *(2019-02-09)*
+-----------------------------
+
+* support Task Configuration Avoidance: https://github.com/JakeWharton/butterknife/pull/1445
+
 Version 10.0.0.3 *(2019-02-04)*
 -----------------------------
 
