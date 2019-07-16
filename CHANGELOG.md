@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+Version 10.0.0.5 *(2019-07-16)*
+-----------------------------
+
+* Solve issues with KAPT: https://github.com/stephanenicolas/butterknife/issues/3
+
 Version 10.0.0.4 *(2019-02-09)*
 -----------------------------
 
