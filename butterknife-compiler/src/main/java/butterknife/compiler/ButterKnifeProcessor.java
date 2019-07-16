@@ -1350,12 +1350,14 @@ public final class ButterKnifeProcessor extends AbstractProcessor {
   }
 
   private Id elementToId(Element element, Class<? extends Annotation> annotation, int value) {
-    JCTree tree = (JCTree) trees.getTree(element, getMirror(element, annotation));
-    if (tree != null) { // tree can be null if the references are compiled types and not source
-      rScanner.reset();
-      tree.accept(rScanner);
-      if (!rScanner.resourceIds.isEmpty()) {
-        return rScanner.resourceIds.values().iterator().next();
+    if (trees != null) {
+      JCTree tree = (JCTree) trees.getTree(element, getMirror(element, annotation));
+      if (tree != null) { // tree can be null if the references are compiled types and not source
+        rScanner.reset();
+        tree.accept(rScanner);
+        if (!rScanner.resourceIds.isEmpty()) {
+          return rScanner.resourceIds.values().iterator().next();
+        }
       }
     }
     return new Id(value);
@@ -1364,11 +1366,13 @@ public final class ButterKnifeProcessor extends AbstractProcessor {
   private Map<Integer, Id> elementToIds(Element element, Class<? extends Annotation> annotation,
       int[] values) {
     Map<Integer, Id> resourceIds = new LinkedHashMap<>();
-    JCTree tree = (JCTree) trees.getTree(element, getMirror(element, annotation));
-    if (tree != null) { // tree can be null if the references are compiled types and not source
-      rScanner.reset();
-      tree.accept(rScanner);
-      resourceIds = rScanner.resourceIds;
+    if (trees != null) {
+      JCTree tree = (JCTree) trees.getTree(element, getMirror(element, annotation));
+      if (tree != null) { // tree can be null if the references are compiled types and not source
+        rScanner.reset();
+        tree.accept(rScanner);
+        resourceIds = rScanner.resourceIds;
+      }
     }
 
     // Every value looked up should have an Id
