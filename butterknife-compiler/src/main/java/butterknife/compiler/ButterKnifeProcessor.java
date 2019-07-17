@@ -152,16 +152,31 @@ public final class ButterKnifeProcessor extends AbstractProcessor {
     elementUtils = env.getElementUtils();
     filer = env.getFiler();
     try {
-      //reflection won't be necessary after https://github.com/gradle/gradle/pull/8393
-      java.lang.reflect.Field delegateField = processingEnv.getClass().getDeclaredField("delegate");
-      delegateField.setAccessible(true);
-      trees = Trees.instance((ProcessingEnvironment) delegateField.get(processingEnv));
-    } catch (Throwable t) {
+      ProcessingEnvironment processingEnvironment = getProcessingEnvironmentFromGradleForJava();
+      trees = Trees.instance(processingEnvironment);
+    } catch (Throwable ignored0) {
       try {
-        trees = Trees.instance(processingEnv);
-      } catch (Throwable ignored) {
+        ProcessingEnvironment processingEnvironment = getProcessingEnvironmentFromGradleForKotlin();
+        trees = Trees.instance(processingEnvironment);
+      } catch (Throwable ignored1) {
+        try {
+          trees = Trees.instance(processingEnv);
+        } catch (Throwable ignored2) {
+        }
       }
     }
+  }
+
+  private ProcessingEnvironment getProcessingEnvironmentFromGradleForJava() throws Exception {
+    java.lang.reflect.Field delegateField = processingEnv.getClass().getDeclaredField("delegate");
+    delegateField.setAccessible(true);
+    return (ProcessingEnvironment) delegateField.get(processingEnv);
+  }
+
+  private ProcessingEnvironment getProcessingEnvironmentFromGradleForKotlin() throws Exception {
+    java.lang.reflect.Field delegateField = processingEnv.getClass().getDeclaredField("processingEnv");
+    delegateField.setAccessible(true);
+    return (ProcessingEnvironment) delegateField.get(processingEnv);
   }
 
   @Override public Set<String> getSupportedOptions() {
